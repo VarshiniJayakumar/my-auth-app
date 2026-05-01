@@ -14,11 +14,12 @@ const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Check if user exists
-    const userExists = await User.findOne({ email });
+    // Check if user exists by email or username
+    const userExists = await User.findOne({ $or: [{ email }, { username }] });
 
     if (userExists) {
-      return res.status(400).json({ success: false, message: 'User already exists' });
+      const message = userExists.email === email ? 'Email already exists' : 'Username already exists';
+      return res.status(400).json({ success: false, message });
     }
 
     // Create user
@@ -29,7 +30,7 @@ const registerUser = async (req, res) => {
     });
 
     if (user) {
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         message: 'User registered successfully',
         data: {
@@ -39,10 +40,18 @@ const registerUser = async (req, res) => {
         },
       });
     } else {
-      res.status(400).json({ success: false, message: 'Invalid user data' });
+      return res.status(400).json({ success: false, message: 'Invalid user data' });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    // Handle Mongoose duplicate key error (code 11000)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({ 
+        success: false, 
+        message: `${field.charAt(0).toUpperCase() + field.slice(1)} already exists` 
+      });
+    }
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -62,16 +71,16 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
-      res.json({
+      return res.json({
         success: true,
         message: 'Login successful',
         token: generateToken(user._id),
       });
     } else {
-      res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 

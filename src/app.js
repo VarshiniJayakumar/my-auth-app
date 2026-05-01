@@ -28,4 +28,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+// Error Handler Middleware
+const { errorHandler } = require('./middleware/errorMiddleware');
+app.use(errorHandler);
+
 module.exports = app;
