@@ -68,4 +68,7 @@ This is a secure REST API for user authentication and authorization built with N
 
 ## Documentation
 
-A Postman collection JSON file (`Postman_Collection.json`) is included in the root directory for easy testing.
+- **Postman Collection (JSON)**: Included in the root directory (`Postman_Collection.json`).
+- **Published Documentation**: [https://documenter.getpostman.com/view/53973536/2sBXqNkJFR](https://documenter.getpostman.com/view/53973536/2sBXqNkJFR)
+
+A Postman collection JSON file is included for easy testing. For the best experience, use the published documentation link above.

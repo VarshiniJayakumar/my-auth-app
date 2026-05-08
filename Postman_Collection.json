@@ -2,12 +2,13 @@
 	"info": {
 		"_postman_id": "7d4b4e3a-8b8e-4a8e-9a7e-1a2b3c4d5e6f",
 		"name": "Auth App API",
-		"description": "API documentation for User Authentication and Authorization with Bearer Token.",
+		"description": "API documentation for User Authentication and Authorization with Bearer Token. This API handles user registration, login, and protected profile retrieval.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Auth",
+			"description": "Authentication endpoints for user registration and login.",
 			"item": [
 				{
 					"name": "Register User",
@@ -34,9 +35,43 @@
 								"register"
 							]
 						},
-						"description": "Endpoint to register a new user."
+						"description": "Endpoint to register a new user. Expects username, email, and password (min 6 characters). Password will be hashed before storage."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "User Registered Successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"johndoe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User registered successfully\",\n    \"data\": {\n        \"_id\": \"645a7b8e9c0d1e2f3a4b5c6d\",\n        \"username\": \"johndoe\",\n        \"email\": \"john@example.com\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "Login User",
@@ -77,14 +112,49 @@
 								"login"
 							]
 						},
-						"description": "Endpoint to login and receive a JWT token."
+						"description": "Endpoint to login and receive a JWT Bearer token. This token should be used for subsequent requests to protected routes."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Login Successful",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Login successful\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+						}
+					]
 				}
 			]
 		},
 		{
 			"name": "User",
+			"description": "Endpoints related to user profile and management.",
 			"item": [
 				{
 					"name": "Get My Profile",
@@ -112,31 +182,36 @@
 								"me"
 							]
 						},
-						"description": "Protected route to get the logged-in user's profile information."
+						"description": "Protected route that returns the profile information of the currently authenticated user based on the Bearer token provided in the Authorization header."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Profile Retrieved Successfully",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User profile retrieved successfully\",\n    \"data\": {\n        \"_id\": \"645a7b8e9c0d1e2f3a4b5c6d\",\n        \"username\": \"johndoe\",\n        \"email\": \"john@example.com\",\n        \"createdAt\": \"2023-05-10T10:00:00.000Z\",\n        \"updatedAt\": \"2023-05-10T10:00:00.000Z\"\n    }\n}"
+						}
+					]
 				}
 			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
 		}
 	],
 	"variable": [
@@ -152,3 +227,4 @@
 		}
 	]
 }
+
